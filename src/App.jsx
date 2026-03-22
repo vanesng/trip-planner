@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import {
   DndContext,
   DragOverlay,
@@ -9,6 +9,7 @@ import {
 } from "@dnd-kit/core";
 import { arrayMove } from "@dnd-kit/sortable";
 import { mockTrip } from "./data/mockData";
+import TripContext from "./context/TripContext";
 import ItineraryView from "./components/ItineraryView";
 import AllPlacesView from "./components/AllPlacesView";
 import TodoView from "./components/TodoView";
@@ -29,6 +30,11 @@ function formatDateRange(start, end) {
 }
 
 // ─── Trip state helpers ───
+
+let nextId = 100;
+function genId(prefix) {
+  return `${prefix}-${++nextId}`;
+}
 
 function findContainer(trip, id) {
   if (trip.unassigned.find((i) => i.id === id)) return "unassigned";
@@ -81,6 +87,177 @@ export default function App() {
     useSensor(PointerSensor, { activationConstraint: { distance: 5 } })
   );
 
+  // ─── CRUD actions ───
+
+  const actions = useMemo(
+    () => ({
+      updateSection: (sectionId, updates) => {
+        setTrip((t) => ({
+          ...t,
+          days: t.days.map((d) => ({
+            ...d,
+            sections: d.sections.map((s) =>
+              s.id === sectionId ? { ...s, ...updates } : s
+            ),
+          })),
+        }));
+      },
+
+      removeSection: (sectionId) => {
+        setTrip((t) => {
+          let orphaned = [];
+          const days = t.days.map((d) => ({
+            ...d,
+            sections: d.sections.filter((s) => {
+              if (s.id === sectionId) {
+                orphaned = s.items;
+                return false;
+              }
+              return true;
+            }),
+          }));
+          return { ...t, days, unassigned: [...t.unassigned, ...orphaned] };
+        });
+      },
+
+      addSection: (dayId) => {
+        setTrip((t) => ({
+          ...t,
+          days: t.days.map((d) =>
+            d.id === dayId
+              ? {
+                  ...d,
+                  sections: [
+                    ...d.sections,
+                    { id: genId("sec"), label: "New section", time: null, items: [] },
+                  ],
+                }
+              : d
+          ),
+        }));
+      },
+
+      updateItem: (itemId, updates) => {
+        setTrip((t) => {
+          if (t.unassigned.find((i) => i.id === itemId)) {
+            return {
+              ...t,
+              unassigned: t.unassigned.map((i) =>
+                i.id === itemId ? { ...i, ...updates } : i
+              ),
+            };
+          }
+          return {
+            ...t,
+            days: t.days.map((d) => ({
+              ...d,
+              sections: d.sections.map((s) => ({
+                ...s,
+                items: s.items.map((i) =>
+                  i.id === itemId ? { ...i, ...updates } : i
+                ),
+              })),
+            })),
+          };
+        });
+      },
+
+      removeItem: (itemId) => {
+        setTrip((t) => ({
+          ...t,
+          unassigned: t.unassigned.filter((i) => i.id !== itemId),
+          days: t.days.map((d) => ({
+            ...d,
+            sections: d.sections.map((s) => ({
+              ...s,
+              items: s.items.filter((i) => i.id !== itemId),
+            })),
+          })),
+        }));
+      },
+
+      addNote: (containerId) => {
+        const note = {
+          id: genId("item"),
+          type: "note",
+          text: "New note",
+          notes: null,
+          time: null,
+        };
+        setTrip((t) => {
+          if (containerId === "unassigned") {
+            return { ...t, unassigned: [...t.unassigned, note] };
+          }
+          return {
+            ...t,
+            days: t.days.map((d) => ({
+              ...d,
+              sections: d.sections.map((s) =>
+                s.id === containerId
+                  ? { ...s, items: [...s.items, note] }
+                  : s
+              ),
+            })),
+          };
+        });
+      },
+
+      addDay: () => {
+        setTrip((t) => ({
+          ...t,
+          days: [
+            ...t.days,
+            {
+              id: genId("day"),
+              date: null,
+              sections: [
+                { id: genId("sec"), label: "Morning", time: null, items: [] },
+              ],
+            },
+          ],
+        }));
+      },
+
+      removeDay: (dayId) => {
+        setTrip((t) => {
+          const day = t.days.find((d) => d.id === dayId);
+          const orphaned = day ? day.sections.flatMap((s) => s.items) : [];
+          return {
+            ...t,
+            days: t.days.filter((d) => d.id !== dayId),
+            unassigned: [...t.unassigned, ...orphaned],
+          };
+        });
+      },
+
+      addTodo: (text) => {
+        setTrip((t) => ({
+          ...t,
+          todos: [...t.todos, { id: genId("todo"), text, done: false }],
+        }));
+      },
+
+      removeTodo: (todoId) => {
+        setTrip((t) => ({
+          ...t,
+          todos: t.todos.filter((td) => td.id !== todoId),
+        }));
+      },
+
+      toggleTodo: (todoId) => {
+        setTrip((t) => ({
+          ...t,
+          todos: t.todos.map((td) =>
+            td.id === todoId ? { ...td, done: !td.done } : td
+          ),
+        }));
+      },
+    }),
+    []
+  );
+
+  // ─── DnD handlers ───
+
   function handleDragStart({ active }) {
     const containerId = findContainer(trip, active.id);
     if (!containerId) return;
@@ -99,7 +276,6 @@ export default function App() {
         findContainer(current, overId) ??
         (isContainerId(current, overId) ? overId : null);
 
-      // Skip if same container or can't resolve either end
       if (!sourceId || !destId || sourceId === destId) return current;
 
       const sourceItems = getItems(current, sourceId);
@@ -107,7 +283,6 @@ export default function App() {
       const item = sourceItems.find((i) => i.id === activeId);
       if (!item) return current;
 
-      // Insert before the item we're hovering over, or at the end
       const overIndex = destItems.findIndex((i) => i.id === overId);
       const insertAt = overIndex >= 0 ? overIndex : destItems.length;
 
@@ -137,10 +312,8 @@ export default function App() {
         findContainer(current, overId) ??
         (isContainerId(current, overId) ? overId : null);
 
-      // Cross-container moves were already handled in onDragOver
       if (!destId || sourceId !== destId) return current;
 
-      // Same-container reorder
       const items = getItems(current, sourceId);
       const oldIndex = items.findIndex((i) => i.id === activeId);
       const newIndex = items.findIndex((i) => i.id === overId);
@@ -155,50 +328,52 @@ export default function App() {
   }
 
   return (
-    <DndContext
-      sensors={sensors}
-      collisionDetection={closestCorners}
-      onDragStart={handleDragStart}
-      onDragOver={handleDragOver}
-      onDragEnd={handleDragEnd}
-      onDragCancel={handleDragCancel}
-    >
-      <div className="app">
-        <div className="main-area">
-          <header className="trip-header">
-            <h1 className="trip-name">{trip.name}</h1>
-            {trip.startDate && trip.endDate && (
-              <p className="trip-dates">
-                {formatDateRange(trip.startDate, trip.endDate)}
-              </p>
-            )}
-          </header>
+    <TripContext.Provider value={actions}>
+      <DndContext
+        sensors={sensors}
+        collisionDetection={closestCorners}
+        onDragStart={handleDragStart}
+        onDragOver={handleDragOver}
+        onDragEnd={handleDragEnd}
+        onDragCancel={handleDragCancel}
+      >
+        <div className="app">
+          <div className="main-area">
+            <header className="trip-header">
+              <h1 className="trip-name">{trip.name}</h1>
+              {trip.startDate && trip.endDate && (
+                <p className="trip-dates">
+                  {formatDateRange(trip.startDate, trip.endDate)}
+                </p>
+              )}
+            </header>
 
-          <nav className="tabs">
-            {TABS.map((tab) => (
-              <button
-                key={tab.id}
-                className={`tab ${activeTab === tab.id ? "tab-active" : ""}`}
-                onClick={() => setActiveTab(tab.id)}
-              >
-                {tab.label}
-              </button>
-            ))}
-          </nav>
+            <nav className="tabs">
+              {TABS.map((tab) => (
+                <button
+                  key={tab.id}
+                  className={`tab ${activeTab === tab.id ? "tab-active" : ""}`}
+                  onClick={() => setActiveTab(tab.id)}
+                >
+                  {tab.label}
+                </button>
+              ))}
+            </nav>
 
-          <div className="tab-content">
-            {activeTab === "itinerary" && <ItineraryView trip={trip} />}
-            {activeTab === "places" && <AllPlacesView trip={trip} />}
-            {activeTab === "todo" && <TodoView todos={trip.todos} />}
+            <div className="tab-content">
+              {activeTab === "itinerary" && <ItineraryView trip={trip} />}
+              {activeTab === "places" && <AllPlacesView trip={trip} />}
+              {activeTab === "todo" && <TodoView todos={trip.todos} />}
+            </div>
           </div>
+
+          <Sidebar trip={trip} />
         </div>
 
-        <Sidebar trip={trip} />
-      </div>
-
-      <DragOverlay dropAnimation={null}>
-        {activeItem && <ItemCard item={activeItem} isOverlay />}
-      </DragOverlay>
-    </DndContext>
+        <DragOverlay dropAnimation={null}>
+          {activeItem && <ItemCard item={activeItem} isOverlay />}
+        </DragOverlay>
+      </DndContext>
+    </TripContext.Provider>
   );
 }
