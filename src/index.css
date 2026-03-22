@@ -1,0 +1,448 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  --color-text: #1a1a1a;
+  --color-text-secondary: #6b7280;
+  --color-text-muted: #9ca3af;
+  --color-border: #e8e3d9;
+  --color-border-dashed: #d6d0c4;
+  --color-bg: #f8f4ee;
+  --color-card-bg: #ffffff;
+  --color-bg-hover: #ede8df;
+  --color-badge-place: #dbeafe;
+  --color-badge-place-text: #2563eb;
+  --color-badge-note: #ede8df;
+  --color-badge-note-text: #6b7280;
+  --color-section-border: #d6d0c4;
+  --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+html {
+  font-size: 15px;
+}
+
+body {
+  font-family: var(--font-sans);
+  color: var(--color-text);
+  background: var(--color-bg);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  min-height: 100vh;
+}
+
+/* ─── Layout ─── */
+
+.app {
+  display: flex;
+  max-width: 1100px;
+  margin: 0 auto;
+  min-height: 100vh;
+}
+
+.main-area {
+  flex: 1;
+  min-width: 0;
+  padding: 2.5rem 2.5rem 4rem 2.5rem;
+  border-right: 1px solid var(--color-border);
+  background: transparent;
+}
+
+/* ─── Trip header ─── */
+
+.trip-header {
+  margin-bottom: 1.5rem;
+}
+
+.trip-name {
+  font-size: 1.6rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.trip-dates {
+  color: var(--color-text-secondary);
+  font-size: 0.9rem;
+  margin-top: 0.25rem;
+}
+
+/* ─── Tabs ─── */
+
+.tabs {
+  display: flex;
+  gap: 0;
+  border-bottom: 1px solid var(--color-border);
+  margin-bottom: 2rem;
+}
+
+.tab {
+  background: none;
+  border: none;
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+  font-family: inherit;
+  transition: color 0.15s;
+}
+
+.tab:hover {
+  color: var(--color-text);
+}
+
+.tab-active {
+  color: var(--color-text);
+  border-bottom-color: var(--color-text);
+  font-weight: 500;
+}
+
+/* ─── Day ─── */
+
+.day {
+  margin-bottom: 2.5rem;
+}
+
+.day-header {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.day-date {
+  font-weight: 400;
+  color: var(--color-text-secondary);
+}
+
+.day-sections {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+/* ─── Section ─── */
+
+.section {
+  border-left: 2px solid var(--color-section-border);
+  padding-left: 1rem;
+}
+
+.section-header {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.section-label {
+  font-size: 0.9rem;
+  font-weight: 500;
+  border-bottom: 1px dashed var(--color-border-dashed);
+  padding-bottom: 1px;
+}
+
+.section-time {
+  font-size: 0.8rem;
+  color: var(--color-text-muted);
+}
+
+.section-items {
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+}
+
+.section-items-empty {
+  min-height: 2.5rem;
+  border: 1px dashed var(--color-border-dashed);
+  border-radius: 6px;
+  transition: background 0.15s, border-color 0.15s;
+}
+
+.section-items-over {
+  background: var(--color-bg-hover);
+  border-color: var(--color-text-muted);
+}
+
+/* ─── Item card ─── */
+
+.item-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  padding: 0.625rem 0.75rem;
+  border-radius: 8px;
+  background: var(--color-card-bg);
+  border: 1px solid var(--color-border);
+  transition: border-color 0.1s;
+}
+
+.item-card:hover {
+  border-color: var(--color-border-dashed);
+}
+
+/* Ghost — the placeholder left behind while dragging */
+.item-card-ghost {
+  opacity: 0.35;
+  border-style: dashed;
+}
+
+/* Overlay — the card that follows the cursor */
+.item-card-overlay {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  cursor: grabbing;
+}
+
+.item-drag-handle {
+  color: var(--color-text-muted);
+  cursor: grab;
+  font-size: 0.75rem;
+  line-height: 1.4rem;
+  user-select: none;
+  flex-shrink: 0;
+  width: 1rem;
+  text-align: center;
+  letter-spacing: -1px;
+  touch-action: none;
+}
+
+.item-drag-handle:active {
+  cursor: grabbing;
+}
+
+.item-badge-col {
+  flex-shrink: 0;
+  padding-top: 1px;
+}
+
+.item-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.25rem;
+  height: 1.25rem;
+  border-radius: 3px;
+  font-size: 0.65rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.badge-place {
+  background: var(--color-badge-place);
+  color: var(--color-badge-place-text);
+}
+
+.badge-note {
+  background: var(--color-badge-note);
+  color: var(--color-badge-note-text);
+}
+
+.item-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.item-header {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+}
+
+.item-name {
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.item-time {
+  font-size: 0.775rem;
+  color: var(--color-text-muted);
+  white-space: nowrap;
+}
+
+.item-meta {
+  font-size: 0.775rem;
+  color: var(--color-text-secondary);
+  margin-top: 1px;
+}
+
+.item-notes {
+  font-size: 0.775rem;
+  color: var(--color-text-secondary);
+  margin-top: 2px;
+  font-style: italic;
+}
+
+/* ─── Add buttons ─── */
+
+.add-button {
+  background: none;
+  border: 1px dashed var(--color-border-dashed);
+  color: var(--color-text-muted);
+  padding: 0.375rem 0.75rem;
+  font-size: 0.8rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-family: inherit;
+  margin-top: 0.75rem;
+  transition: color 0.15s, border-color 0.15s;
+}
+
+.add-button:hover {
+  color: var(--color-text-secondary);
+  border-color: var(--color-text-secondary);
+}
+
+.add-day-button {
+  margin-top: 0;
+}
+
+/* ─── Sidebar ─── */
+
+.sidebar {
+  width: 260px;
+  flex-shrink: 0;
+  padding: 2.5rem 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.sidebar-section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.sidebar-input {
+  width: 100%;
+  padding: 0.5rem 0.625rem;
+  border: 1px dashed var(--color-border-dashed);
+  border-radius: 4px;
+  font-size: 0.8rem;
+  font-family: inherit;
+  color: var(--color-text);
+  background: var(--color-card-bg);
+  outline: none;
+}
+
+.sidebar-input::placeholder {
+  color: var(--color-text-muted);
+}
+
+.sidebar-input:focus {
+  border-style: solid;
+  border-color: var(--color-badge-place-text);
+}
+
+.sidebar-add-note {
+  margin-top: 0;
+  width: 100%;
+}
+
+.sidebar-heading {
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-text-secondary);
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+}
+
+.sidebar-count {
+  font-size: 0.7rem;
+  font-weight: 500;
+  background: var(--color-badge-note);
+  color: var(--color-text-secondary);
+  padding: 0.05rem 0.375rem;
+  border-radius: 8px;
+}
+
+.unassigned-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+}
+
+.unassigned-list-empty {
+  min-height: 2.5rem;
+  border: 1px dashed var(--color-border-dashed);
+  border-radius: 6px;
+  transition: background 0.15s, border-color 0.15s;
+}
+
+.unassigned-list .item-name {
+  font-size: 0.825rem;
+}
+
+.unassigned-list .item-meta,
+.unassigned-list .item-notes {
+  font-size: 0.725rem;
+}
+
+/* ─── To do ─── */
+
+.todo-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.todo-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  padding: 0.25rem 0;
+}
+
+.todo-checkbox {
+  accent-color: var(--color-text);
+  cursor: pointer;
+}
+
+.todo-text {
+  font-size: 0.85rem;
+}
+
+.todo-done {
+  text-decoration: line-through;
+  color: var(--color-text-muted);
+}
+
+/* ─── All places view ─── */
+
+.view-subtitle {
+  font-size: 0.85rem;
+  color: var(--color-text-secondary);
+  margin-bottom: 1rem;
+}
+
+.all-places-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+}
+
+/* ─── Todo main view ─── */
+
+.todo-view {
+  max-width: 400px;
+}
+
+.todo-view .todo-item {
+  padding: 0.375rem 0;
+}
+
+.todo-view .todo-text {
+  font-size: 0.9rem;
+}
