@@ -3,7 +3,7 @@ import { useDroppable } from "@dnd-kit/core";
 import { SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable";
 import SortableItem from "./SortableItem";
 import { useTripActions } from "../context/TripContext";
-import { parseGoogleMapsUrl, isGoogleMapsUrl } from "../utils/placeResolver";
+import { resolveGoogleMapsUrl, isGoogleMapsUrl } from "../utils/placeResolver";
 
 export default function Sidebar({ trip }) {
   const { setNodeRef, isOver } = useDroppable({ id: "unassigned" });
@@ -11,15 +11,27 @@ export default function Sidebar({ trip }) {
   const [newTodo, setNewTodo] = useState("");
   const [mapsUrl, setMapsUrl] = useState("");
   const [urlError, setUrlError] = useState(null);
+  const [resolving, setResolving] = useState(false);
 
-  function handleAddPlace(url) {
-    const parsed = parseGoogleMapsUrl(url);
-    if (parsed) {
-      actions.addPlace(parsed);
-      setMapsUrl("");
-      setUrlError(null);
-    } else {
+  async function handleAddPlace(url) {
+    if (!isGoogleMapsUrl(url)) {
       setUrlError("Not a recognized Google Maps link");
+      return;
+    }
+    setResolving(true);
+    setUrlError(null);
+    try {
+      const parsed = await resolveGoogleMapsUrl(url);
+      if (parsed) {
+        actions.addPlace(parsed);
+        setMapsUrl("");
+      } else {
+        setUrlError("Couldn't parse that link");
+      }
+    } catch {
+      setUrlError("Something went wrong");
+    } finally {
+      setResolving(false);
     }
   }
 
@@ -51,9 +63,10 @@ export default function Sidebar({ trip }) {
       <div className="sidebar-section">
         <input
           type="text"
-          placeholder="Paste Google Maps link"
-          className="sidebar-input"
+          placeholder={resolving ? "Resolving link…" : "Paste Google Maps link"}
+          className={`sidebar-input${resolving ? " sidebar-input-loading" : ""}`}
           value={mapsUrl}
+          disabled={resolving}
           onChange={(e) => {
             setMapsUrl(e.target.value);
             setUrlError(null);

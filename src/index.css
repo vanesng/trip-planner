@@ -360,6 +360,11 @@ body {
   border-color: var(--color-badge-place-text);
 }
 
+.sidebar-input-loading {
+  opacity: 0.6;
+  cursor: wait;
+}
+
 .sidebar-add-note {
   margin-top: 0;
   width: 100%;
