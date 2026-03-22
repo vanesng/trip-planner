@@ -176,6 +176,21 @@ export default function App() {
         }));
       },
 
+      addPlace: ({ name, neighborhood, hours, googleMapsUrl }) => {
+        const place = {
+          id: genId("item"),
+          type: "place",
+          name: name || "New place",
+          neighborhood: neighborhood || null,
+          hours: hours || null,
+          googleMapsUrl: googleMapsUrl || null,
+          placeData: null,
+          notes: null,
+          time: null,
+        };
+        setTrip((t) => ({ ...t, unassigned: [...t.unassigned, place] }));
+      },
+
       addNote: (containerId) => {
         const note = {
           id: genId("item"),

@@ -3,11 +3,40 @@ import { useDroppable } from "@dnd-kit/core";
 import { SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable";
 import SortableItem from "./SortableItem";
 import { useTripActions } from "../context/TripContext";
+import { parseGoogleMapsUrl, isGoogleMapsUrl } from "../utils/placeResolver";
 
 export default function Sidebar({ trip }) {
   const { setNodeRef, isOver } = useDroppable({ id: "unassigned" });
   const actions = useTripActions();
   const [newTodo, setNewTodo] = useState("");
+  const [mapsUrl, setMapsUrl] = useState("");
+  const [urlError, setUrlError] = useState(null);
+
+  function handleAddPlace(url) {
+    const parsed = parseGoogleMapsUrl(url);
+    if (parsed) {
+      actions.addPlace(parsed);
+      setMapsUrl("");
+      setUrlError(null);
+    } else {
+      setUrlError("Not a recognized Google Maps link");
+    }
+  }
+
+  function handleUrlPaste(e) {
+    const pasted = e.clipboardData.getData("text");
+    if (isGoogleMapsUrl(pasted)) {
+      e.preventDefault();
+      handleAddPlace(pasted);
+    }
+  }
+
+  function handleUrlKeyDown(e) {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      if (mapsUrl.trim()) handleAddPlace(mapsUrl);
+    }
+  }
 
   function handleAddTodo(e) {
     e.preventDefault();
@@ -24,8 +53,15 @@ export default function Sidebar({ trip }) {
           type="text"
           placeholder="Paste Google Maps link"
           className="sidebar-input"
-          readOnly
+          value={mapsUrl}
+          onChange={(e) => {
+            setMapsUrl(e.target.value);
+            setUrlError(null);
+          }}
+          onPaste={handleUrlPaste}
+          onKeyDown={handleUrlKeyDown}
         />
+        {urlError && <p className="input-error">{urlError}</p>}
         <button
           className="add-button sidebar-add-note"
           onClick={() => actions.addNote("unassigned")}

@@ -28,7 +28,15 @@ export default function ItemCard({
       </div>
       <div className="item-content">
         <div className="item-header">
-          {isPlace ? (
+          {isPlace && editable ? (
+            <EditableText
+              value={item.name}
+              onChange={(val) =>
+                actions.updateItem(item.id, { name: val || "New place" })
+              }
+              className="item-name"
+            />
+          ) : isPlace ? (
             <span className="item-name">{item.name}</span>
           ) : editable ? (
             <EditableText
@@ -54,13 +62,39 @@ export default function ItemCard({
         </div>
         {isPlace && (
           <div className="item-meta">
-            {item.neighborhood && (
-              <span className="item-neighborhood">{item.neighborhood}</span>
+            {editable ? (
+              <>
+                <EditableText
+                  value={item.neighborhood}
+                  onChange={(val) =>
+                    actions.updateItem(item.id, { neighborhood: val })
+                  }
+                  placeholder="neighborhood"
+                  className="item-neighborhood"
+                />
+                <span className="item-meta-sep"> · </span>
+                <EditableText
+                  value={item.hours}
+                  onChange={(val) =>
+                    actions.updateItem(item.id, { hours: val })
+                  }
+                  placeholder="hours"
+                  className="item-hours"
+                />
+              </>
+            ) : (
+              <>
+                {item.neighborhood && (
+                  <span className="item-neighborhood">{item.neighborhood}</span>
+                )}
+                {item.neighborhood && item.hours && (
+                  <span className="item-meta-sep"> · </span>
+                )}
+                {item.hours && (
+                  <span className="item-hours">{item.hours}</span>
+                )}
+              </>
             )}
-            {item.neighborhood && item.hours && (
-              <span className="item-meta-sep"> · </span>
-            )}
-            {item.hours && <span className="item-hours">{item.hours}</span>}
           </div>
         )}
         {isPlace && editable ? (

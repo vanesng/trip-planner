@@ -353,6 +353,12 @@ body {
   width: 100%;
 }
 
+.input-error {
+  font-size: 0.75rem;
+  color: #ef4444;
+  margin-top: -0.125rem;
+}
+
 .sidebar-heading {
   font-size: 0.8rem;
   font-weight: 600;
@@ -511,6 +517,16 @@ body {
   font-style: italic;
   width: 100%;
   margin-top: 2px;
+}
+
+.editable-input.item-neighborhood,
+.editable-input.item-hours {
+  font-size: 0.775rem;
+  width: 6rem;
+}
+
+.item-meta .editable-text {
+  font-size: 0.775rem;
 }
 
 /* ─── Remove buttons ─── */
