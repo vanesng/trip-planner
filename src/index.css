@@ -286,6 +286,18 @@ body {
   font-style: italic;
 }
 
+.item-maps-link {
+  display: inline-block;
+  font-size: 0.7rem;
+  color: var(--color-badge-place-text);
+  text-decoration: none;
+  margin-top: 2px;
+}
+
+.item-maps-link:hover {
+  text-decoration: underline;
+}
+
 /* ─── Add buttons ─── */
 
 .add-button {
@@ -474,6 +486,11 @@ body {
 .editable-placeholder {
   color: var(--color-text-muted);
   font-style: italic;
+}
+
+.item-name.editable-placeholder {
+  font-style: normal;
+  border-bottom: 1px dashed var(--color-border-dashed);
 }
 
 .editable-input {

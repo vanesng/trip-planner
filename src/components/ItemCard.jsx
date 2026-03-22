@@ -31,13 +31,12 @@ export default function ItemCard({
           {isPlace && editable ? (
             <EditableText
               value={item.name}
-              onChange={(val) =>
-                actions.updateItem(item.id, { name: val || "New place" })
-              }
+              onChange={(val) => actions.updateItem(item.id, { name: val })}
+              placeholder="Enter place name"
               className="item-name"
             />
           ) : isPlace ? (
-            <span className="item-name">{item.name}</span>
+            <span className="item-name">{item.name || "New place"}</span>
           ) : editable ? (
             <EditableText
               value={item.text}
@@ -96,6 +95,16 @@ export default function ItemCard({
               </>
             )}
           </div>
+        )}
+        {isPlace && item.googleMapsUrl && (
+          <a
+            href={item.googleMapsUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="item-maps-link"
+          >
+            View on Google Maps ↗
+          </a>
         )}
         {isPlace && editable ? (
           <EditableText

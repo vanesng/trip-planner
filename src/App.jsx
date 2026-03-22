@@ -180,7 +180,7 @@ export default function App() {
         const place = {
           id: genId("item"),
           type: "place",
-          name: name || "New place",
+          name: name || null,
           neighborhood: neighborhood || null,
           hours: hours || null,
           googleMapsUrl: googleMapsUrl || null,
