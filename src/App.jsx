@@ -15,10 +15,12 @@ import AllPlacesView from "./components/AllPlacesView";
 import TodoView from "./components/TodoView";
 import Sidebar from "./components/Sidebar";
 import ItemCard from "./components/ItemCard";
+import ShareView from "./components/ShareView";
+import { generateShareUrl, getSharedTrip } from "./utils/shareUtils";
 
 const TABS = [
   { id: "itinerary", label: "Itinerary" },
-  { id: "places", label: "All places" },
+  { id: "considering", label: "Also considering" },
   { id: "todo", label: "To do" },
 ];
 
@@ -122,9 +124,20 @@ function setItems(trip, containerId, newItems) {
 // ─── App ───
 
 export default function App() {
+  // Check for shared view first
+  const [sharedTrip] = useState(() => getSharedTrip());
+  if (sharedTrip) {
+    return <ShareView trip={sharedTrip} />;
+  }
+
+  return <TripEditor />;
+}
+
+function TripEditor() {
   const [trip, setTrip] = useState(() => loadTrip() || mockTrip);
   const [activeItem, setActiveItem] = useState(null);
   const [activeTab, setActiveTab] = useState("itinerary");
+  const [shareCopied, setShareCopied] = useState(false);
 
   // Auto-save to localStorage on every change
   useEffect(() => {
@@ -132,6 +145,14 @@ export default function App() {
   }, [trip]);
 
   const handleExport = useCallback(() => exportTrip(trip), [trip]);
+
+  const handleShare = useCallback(() => {
+    const url = generateShareUrl(trip);
+    navigator.clipboard.writeText(url).then(() => {
+      setShareCopied(true);
+      setTimeout(() => setShareCopied(false), 2000);
+    });
+  }, [trip]);
 
   const handleImport = useCallback(() => {
     const input = document.createElement("input");
@@ -439,6 +460,9 @@ export default function App() {
                   )}
                 </div>
                 <div className="trip-actions">
+                  <button className="btn-subtle btn-share" onClick={handleShare} title="Copy shareable link">
+                    {shareCopied ? "Copied!" : "Share"}
+                  </button>
                   <button className="btn-subtle" onClick={handleExport} title="Download trip as JSON">Export</button>
                   <button className="btn-subtle" onClick={handleImport} title="Load trip from JSON file">Import</button>
                   <button className="btn-subtle btn-danger" onClick={handleReset} title="Reset to original data">Reset</button>
@@ -460,7 +484,7 @@ export default function App() {
 
             <div className="tab-content">
               {activeTab === "itinerary" && <ItineraryView trip={trip} />}
-              {activeTab === "places" && <AllPlacesView trip={trip} />}
+              {activeTab === "considering" && <AllPlacesView trip={trip} />}
               {activeTab === "todo" && <TodoView todos={trip.todos} />}
             </div>
           </div>
