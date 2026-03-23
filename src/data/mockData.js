@@ -19,6 +19,7 @@ export const mockTrip = {
               text: "Land at TUN Terminal M at 8:35 PM. Taxi to Dar Ben Turkia (~30-40 min).",
               notes: null,
               time: "8:35pm",
+              emoji: "✈️",
             },
             {
               id: "item-2",
@@ -26,6 +27,7 @@ export const mockTrip = {
               text: "Night walk through the Medina — atmospheric and nearly empty, great first impression",
               notes: null,
               time: null,
+              emoji: "🌙",
             },
           ],
         },
@@ -44,6 +46,7 @@ export const mockTrip = {
               placeData: null,
               notes: "Rooftop restaurant in a historic Medina palace. Close to hotel, easy arrival-night dinner. Reserve ahead.",
               time: null,
+              emoji: "🍽️",
             },
           ],
         },
@@ -64,6 +67,7 @@ export const mockTrip = {
               text: "Taxi or TGM train from Tunis Marine station (~20-30 min). Go early — tour buses arrive 10-11 AM.",
               notes: null,
               time: "8:30am",
+              emoji: "🚕",
             },
             {
               id: "item-5",
@@ -75,6 +79,7 @@ export const mockTrip = {
               placeData: null,
               notes: "Largest Roman baths in Africa. Right by the coast.",
               time: "9am",
+              emoji: "🏛️",
             },
             {
               id: "item-6",
@@ -86,6 +91,7 @@ export const mockTrip = {
               placeData: null,
               notes: "Start here for the panoramic overview. Museum at the top.",
               time: "10:30am",
+              emoji: "🏛️",
             },
           ],
         },
@@ -100,6 +106,7 @@ export const mockTrip = {
               text: "One TGM stop from Carthage or 5 min taxi. Cruise tourists leave by late afternoon — gets better as the day goes on.",
               notes: null,
               time: null,
+              emoji: "🚆",
             },
             {
               id: "item-8",
@@ -111,6 +118,7 @@ export const mockTrip = {
               placeData: null,
               notes: "Lunch spot in Sidi Bou Said.",
               time: "12:30pm",
+              emoji: "🍽️",
             },
             {
               id: "item-9",
@@ -122,6 +130,7 @@ export const mockTrip = {
               placeData: null,
               notes: "Baron d'Erlanger's palace — now Centre des Musiques Arabes et Méditerranéennes. Stunning Andalusian architecture, incredible bay views. Do mid-afternoon when quieter.",
               time: "2:30pm",
+              emoji: "🎵",
             },
             {
               id: "item-10",
@@ -129,6 +138,7 @@ export const mockTrip = {
               text: "Wander the village — blue doors, Café des Nattes, the views. Sunset from Sidi Bou Said is the postcard moment.",
               notes: null,
               time: null,
+              emoji: "🌅",
             },
           ],
         },
@@ -143,6 +153,7 @@ export const mockTrip = {
               text: "Head back to Medina. Friday evening the Medina can be lively.",
               notes: null,
               time: null,
+              emoji: "🚕",
             },
             {
               id: "item-12",
@@ -150,6 +161,7 @@ export const mockTrip = {
               text: "Dinner — flexible. Explore Medina dining options.",
               notes: null,
               time: "8pm",
+              emoji: "🍽️",
             },
           ],
         },
@@ -174,6 +186,7 @@ export const mockTrip = {
               placeData: null,
               notes: "Beautiful 18th-century caravanserai. Lovely courtyard.",
               time: "9:30am",
+              emoji: "🏺",
             },
             {
               id: "item-14",
@@ -181,6 +194,7 @@ export const mockTrip = {
               text: "Souk shopping — 2-3 hours. Zitouna Mosque area, main souks.",
               notes: null,
               time: null,
+              emoji: "🛍️",
             },
             {
               id: "item-15",
@@ -192,6 +206,7 @@ export const mockTrip = {
               placeData: null,
               notes: "Japanese-Tunisian fusion. The kind of cool unique crossover spot you're after.",
               time: null,
+              emoji: "☕",
             },
             {
               id: "item-16",
@@ -203,6 +218,7 @@ export const mockTrip = {
               placeData: null,
               notes: "Famous friperie / thrift market. Very local, very cool — what young Tunisians do.",
               time: null,
+              emoji: "🛍️",
             },
           ],
         },
@@ -217,6 +233,7 @@ export const mockTrip = {
               text: "Check out of Dar Ben Turkia.",
               notes: null,
               time: "12:30pm",
+              emoji: "🏨",
             },
             {
               id: "item-18",
@@ -228,6 +245,7 @@ export const mockTrip = {
               placeData: null,
               notes: "Contemporary Tunisian. Try to reserve — popular spot.",
               time: "1pm",
+              emoji: "🍽️",
             },
           ],
         },
@@ -246,6 +264,7 @@ export const mockTrip = {
               placeData: null,
               notes: "World's largest Roman mosaic collection. Allow 2+ hours. Afternoon = after morning cruise ship wave.",
               time: "3pm",
+              emoji: "🏛️",
             },
             {
               id: "item-20",
@@ -253,6 +272,7 @@ export const mockTrip = {
               text: "Check into Hotel Belvedere Fourati (nearby). Drop bags, rest.",
               notes: null,
               time: "5:30pm",
+              emoji: "🏨",
             },
           ],
         },
@@ -267,6 +287,7 @@ export const mockTrip = {
               text: "Flex time — wander Belvedere Park area, or dinner out. Early night (3 AM airport departure).",
               notes: null,
               time: null,
+              emoji: "🌿",
             },
           ],
         },
@@ -287,6 +308,7 @@ export const mockTrip = {
               text: "~3:00 AM taxi to TUN Terminal M. 5:25 AM flight.",
               notes: null,
               time: "3am",
+              emoji: "✈️",
             },
           ],
         },
@@ -304,6 +326,7 @@ export const mockTrip = {
       placeData: null,
       notes: "Local roadside leblebi (chickpea soup). Grab if it's on your route — great for a quick breakfast or snack.",
       time: null,
+      emoji: "🧆",
     },
     {
       id: "item-24",
@@ -315,6 +338,7 @@ export const mockTrip = {
       placeData: null,
       notes: "Modern café. Worth it if on the way, otherwise skip.",
       time: null,
+      emoji: "☕",
     },
     {
       id: "item-25",
@@ -326,6 +350,7 @@ export const mockTrip = {
       placeData: null,
       notes: "'Miami of Tunisia' — modern beach town north of Sidi Bou Said. Good restaurants, local vibes. Only if you have flex time.",
       time: null,
+      emoji: "🏖️",
     },
   ],
   todos: [

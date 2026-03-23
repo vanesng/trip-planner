@@ -1,4 +1,5 @@
 import EditableText from "./EditableText";
+import EmojiPicker from "./EmojiPicker";
 import { useTripActions } from "../context/TripContext";
 
 export default function ItemCard({
@@ -11,6 +12,7 @@ export default function ItemCard({
   const actions = useTripActions();
   const isPlace = item.type === "place";
   const editable = !readOnly && !isOverlay;
+  const defaultEmoji = isPlace ? "📍" : "📝";
 
   return (
     <div
@@ -22,9 +24,17 @@ export default function ItemCard({
         </div>
       )}
       <div className="item-badge-col">
-        <span className={`item-badge ${isPlace ? "badge-place" : "badge-note"}`}>
-          {isPlace ? "P" : "N"}
-        </span>
+        {editable ? (
+          <EmojiPicker
+            value={item.emoji}
+            defaultEmoji={defaultEmoji}
+            onChange={(emoji) => actions.updateItem(item.id, { emoji })}
+          />
+        ) : (
+          <span className="emoji-badge emoji-badge-readonly">
+            {item.emoji || defaultEmoji}
+          </span>
+        )}
       </div>
       <div className="item-content">
         <div className="item-header">

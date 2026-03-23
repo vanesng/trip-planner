@@ -284,6 +284,79 @@ body {
   color: var(--color-badge-note-text);
 }
 
+/* ─── Emoji picker ─── */
+
+.emoji-picker-wrap {
+  position: relative;
+}
+
+.emoji-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.5rem;
+  height: 1.5rem;
+  font-size: 0.9rem;
+  border: none;
+  background: none;
+  cursor: pointer;
+  border-radius: 4px;
+  padding: 0;
+  transition: background 0.1s;
+  line-height: 1;
+}
+
+.emoji-badge:hover {
+  background: var(--color-bg-hover);
+}
+
+.emoji-badge-readonly {
+  cursor: default;
+}
+
+.emoji-badge-readonly:hover {
+  background: none;
+}
+
+.emoji-picker-popup {
+  position: absolute;
+  top: 100%;
+  left: -4px;
+  z-index: 50;
+  background: var(--color-card-bg);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  padding: 0.5rem;
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 2px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  width: 180px;
+}
+
+.emoji-option {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.75rem;
+  height: 1.75rem;
+  font-size: 1rem;
+  border: none;
+  background: none;
+  cursor: pointer;
+  border-radius: 4px;
+  padding: 0;
+  transition: background 0.1s;
+}
+
+.emoji-option:hover {
+  background: var(--color-bg-hover);
+}
+
+.emoji-option-active {
+  background: var(--color-badge-place);
+}
+
 .item-content {
   flex: 1;
   min-width: 0;
